@@ -12,12 +12,19 @@ export class ChatbotService {
     projectId: number,
     createChatbotDto: CreateChatbotDto,
   ): Promise<Chatbot> {
-    return this.prismaService.chatbot.create({
+    const chatbot = await this.prismaService.chatbot.create({
       data: {
         projectId,
         ...createChatbotDto,
       },
     });
+
+    if (chatbot.enabled) {
+      // TODO: validate
+      // TODO: send schema to chatbot-container
+    }
+
+    return chatbot;
   }
 
   async findAll(projectId: number): Promise<Chatbot[]> {
@@ -64,6 +71,11 @@ export class ChatbotService {
 
     if (!chatbot) {
       throw new NotFoundException();
+    }
+
+    if (chatbot.enabled) {
+      // TODO: validate
+      // TODO: send schema to chatbot-container
     }
 
     return chatbot;
