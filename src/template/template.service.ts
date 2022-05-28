@@ -1,26 +1,53 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  NotImplementedException,
+} from '@nestjs/common';
+import { PrismaService } from 'src/prisma.service';
 import { CreateChatbotTemplateDto } from './dto/create-template.dto';
 import { UpdateChatbotTemplateDto } from './dto/update-template.dto';
+import { ChatbotTemplate } from './entities/template.entity';
 
 @Injectable()
 export class ChatbotTemplateService {
-  create(createChatbotTemplateDto: CreateChatbotTemplateDto) {
-    return 'This action adds a new chatbotTemplate';
+  constructor(private readonly prismaService: PrismaService) {}
+
+  async create(
+    createChatbotTemplateDto: CreateChatbotTemplateDto,
+  ): Promise<ChatbotTemplate> {
+    throw new NotImplementedException();
   }
 
-  findAll() {
-    return `This action returns all chatbotTemplate`;
+  async findAll(): Promise<ChatbotTemplate[]> {
+    return this.prismaService.chatbotTemplate.findMany({
+      where: {},
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} chatbotTemplate`;
+  async findOne(id: number): Promise<ChatbotTemplate> {
+    const chatbotTemplate = await this.prismaService.chatbotTemplate.findUnique(
+      {
+        where: {
+          id,
+        },
+      },
+    );
+
+    if (!chatbotTemplate) {
+      throw new NotFoundException();
+    }
+
+    return chatbotTemplate;
   }
 
-  update(id: number, updateChatbotTemplateDto: UpdateChatbotTemplateDto) {
-    return `This action updates a #${id} chatbotTemplate`;
+  async update(
+    id: number,
+    updateChatbotTemplateDto: UpdateChatbotTemplateDto,
+  ): Promise<ChatbotTemplate> {
+    throw new NotImplementedException();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} chatbotTemplate`;
+  async delete(id: number): Promise<ChatbotTemplate> {
+    throw new NotImplementedException();
   }
 }

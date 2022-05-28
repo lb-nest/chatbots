@@ -29,21 +29,21 @@ export class ChatbotController {
     @Auth() user: TokenPayload,
     @Body() createChatbotDto: CreateChatbotDto,
   ) {
-    return this.chatbotService.create(createChatbotDto);
+    return this.chatbotService.create(user.project.id, createChatbotDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(new TransformInterceptor(Chatbot))
   @Get()
   findAll(@Auth() user: TokenPayload) {
-    return this.chatbotService.findAll();
+    return this.chatbotService.findAll(user.project.id);
   }
 
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(new TransformInterceptor(Chatbot))
   @Get(':id')
   findOne(@Auth() user: TokenPayload, @Param('id') id: string) {
-    return this.chatbotService.findOne(+id);
+    return this.chatbotService.findOne(user.project.id, Number(id));
   }
 
   @UseGuards(JwtAuthGuard)
@@ -54,13 +54,17 @@ export class ChatbotController {
     @Param('id') id: string,
     @Body() updateChatbotDto: UpdateChatbotDto,
   ) {
-    return this.chatbotService.update(+id, updateChatbotDto);
+    return this.chatbotService.update(
+      user.project.id,
+      Number(id),
+      updateChatbotDto,
+    );
   }
 
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(new TransformInterceptor(Chatbot))
   @Delete(':id')
   delete(@Auth() user: TokenPayload, @Param('id') id: string) {
-    return this.chatbotService.delete(+id);
+    return this.chatbotService.delete(user.project.id, Number(id));
   }
 }

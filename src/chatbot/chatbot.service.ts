@@ -1,26 +1,90 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from 'src/prisma.service';
 import { CreateChatbotDto } from './dto/create-chatbot.dto';
 import { UpdateChatbotDto } from './dto/update-chatbot.dto';
+import { Chatbot } from './entities/chatbot.entity';
 
 @Injectable()
 export class ChatbotService {
-  create(createChatbotDto: CreateChatbotDto) {
-    return 'This action adds a new chatbot';
+  constructor(private readonly prismaService: PrismaService) {}
+
+  async create(
+    projectId: number,
+    createChatbotDto: CreateChatbotDto,
+  ): Promise<Chatbot> {
+    return this.prismaService.chatbot.create({
+      data: {
+        projectId,
+        ...createChatbotDto,
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all chatbot`;
+  async findAll(projectId: number): Promise<Chatbot[]> {
+    return this.prismaService.chatbot.findMany({
+      where: {
+        projectId,
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} chatbot`;
+  async findOne(projectId: number, id: number): Promise<Chatbot> {
+    const chatbot = await this.prismaService.chatbot.findUnique({
+      where: {
+        projectId_id: {
+          projectId,
+          id,
+        },
+      },
+    });
+
+    if (!chatbot) {
+      throw new NotFoundException();
+    }
+
+    return chatbot;
   }
 
-  update(id: number, updateChatbotDto: UpdateChatbotDto) {
-    return `This action updates a #${id} chatbot`;
+  async update(
+    projectId: number,
+    id: number,
+    updateChatbotDto: UpdateChatbotDto,
+  ): Promise<Chatbot> {
+    const chatbot = await this.prismaService.chatbot
+      .update({
+        where: {
+          projectId_id: {
+            projectId,
+            id,
+          },
+        },
+        data: updateChatbotDto,
+      })
+      .catch(() => undefined);
+
+    if (!chatbot) {
+      throw new NotFoundException();
+    }
+
+    return chatbot;
   }
 
-  delete(id: number) {
-    return `This action removes a #${id} chatbot`;
+  async delete(projectId: number, id: number): Promise<Chatbot> {
+    const chatbot = await this.prismaService.chatbot
+      .delete({
+        where: {
+          projectId_id: {
+            projectId,
+            id,
+          },
+        },
+      })
+      .catch(() => undefined);
+
+    if (!chatbot) {
+      throw new NotFoundException();
+    }
+
+    return chatbot;
   }
 }
