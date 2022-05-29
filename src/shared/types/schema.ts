@@ -32,10 +32,10 @@ export class Schema {
     },
     keepDiscriminatorProperty: true,
   })
-  @ValidateNested()
+  @ValidateNested({ each: true })
   nodes: Node[];
 
   @Type(() => Variable)
-  @ValidateNested()
+  @ValidateNested({ each: true })
   variables: Variable[];
 }
