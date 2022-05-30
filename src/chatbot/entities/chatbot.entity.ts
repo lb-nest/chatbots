@@ -15,6 +15,9 @@ export class Chatbot {
 
   enabled: boolean;
 
+  @Exclude()
+  container: string;
+
   error?: string;
 
   createdAt: Date;
