@@ -1,11 +1,13 @@
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsBoolean,
   IsNotEmpty,
   IsObject,
   IsOptional,
   IsSemVer,
+  ValidateNested,
 } from 'class-validator';
+import { Flow } from 'src/shared/types';
 
 export class CreateChatbotDto {
   @IsNotEmpty()
@@ -16,8 +18,9 @@ export class CreateChatbotDto {
   @IsSemVer()
   version?: string;
 
-  @IsObject()
-  schema: any;
+  @Type(() => Flow)
+  @ValidateNested()
+  flow: Flow;
 
   @IsOptional()
   @IsBoolean()

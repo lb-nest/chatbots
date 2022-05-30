@@ -1,4 +1,5 @@
 import { Exclude } from 'class-transformer';
+import { Flow } from 'src/shared/types';
 
 export class Chatbot {
   id: number;
@@ -10,7 +11,7 @@ export class Chatbot {
 
   version: string;
 
-  schema: any;
+  flow: Flow;
 
   enabled: boolean;
 

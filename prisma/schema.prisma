@@ -15,8 +15,9 @@ model Chatbot {
   projectId Int
   name      String
   version   String   @default("1.0.0")
-  schema    Json
+  flow      Json
   enabled   Boolean  @default(false)
+  container String?
   error     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -34,7 +35,7 @@ model ChatbotTemplate {
   description String
   imageUrl    String
   category    Category @default(Other)
-  schema      Json
+  flow        Json
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

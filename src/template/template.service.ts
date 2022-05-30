@@ -19,9 +19,11 @@ export class ChatbotTemplateService {
   }
 
   async findAll(): Promise<ChatbotTemplate[]> {
-    return this.prismaService.chatbotTemplate.findMany({
+    const chatbotTemplates = await this.prismaService.chatbotTemplate.findMany({
       where: {},
     });
+
+    return chatbotTemplates as any[];
   }
 
   async findOne(id: number): Promise<ChatbotTemplate> {
@@ -37,7 +39,7 @@ export class ChatbotTemplateService {
       throw new NotFoundException();
     }
 
-    return chatbotTemplate;
+    return chatbotTemplate as any;
   }
 
   async update(
