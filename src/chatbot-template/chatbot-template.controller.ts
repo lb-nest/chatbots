@@ -11,10 +11,10 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { TransformInterceptor } from 'src/shared/interceptors/transform.interceptor';
-import { CreateChatbotTemplateDto } from './dto/create-template.dto';
-import { UpdateChatbotTemplateDto } from './dto/update-template.dto';
-import { ChatbotTemplate } from './entities/template.entity';
-import { ChatbotTemplateService } from './template.service';
+import { ChatbotTemplateService } from './chatbot-template.service';
+import { CreateChatbotTemplateDto } from './dto/create-chatbot-template.dto';
+import { UpdateChatbotTemplateDto } from './dto/update-chatbot-template.dto';
+import { ChatbotTemplate } from './entities/chatbot-template.entity';
 
 @Controller('chatbot-template')
 export class ChatbotTemplateController {

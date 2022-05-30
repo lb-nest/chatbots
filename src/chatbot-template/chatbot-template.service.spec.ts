@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ChatbotTemplateService } from './template.service';
+import { ChatbotTemplateService } from './chatbot-template.service';
 
 describe('ChatbotTemplateService', () => {
   let service: ChatbotTemplateService;

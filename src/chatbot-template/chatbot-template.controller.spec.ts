@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ChatbotTemplateController } from './template.controller';
-import { ChatbotTemplateService } from './template.service';
+import { ChatbotTemplateController } from './chatbot-template.controller';
+import { ChatbotTemplateService } from './chatbot-template.service';
 
 describe('ChatbotTemplateController', () => {
   let controller: ChatbotTemplateController;
