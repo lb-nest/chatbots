@@ -1,5 +1,5 @@
 import { Exclude } from 'class-transformer';
-import { Flow } from 'src/shared/types';
+import { Flow } from 'src/shared/models';
 
 export class Chatbot {
   id: number;

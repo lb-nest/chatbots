@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Flow, Schema } from '../types';
+import { Flow, Schema } from '../models';
 
 @Injectable()
 export class ChatbotsCompiler {
