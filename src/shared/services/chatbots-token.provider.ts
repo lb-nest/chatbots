@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import jwt from 'jsonwebtoken';
+import jwt, { sign } from 'jsonwebtoken';
 
 @Injectable()
 export class ChatbotsTokenProvider {
   constructor(private readonly configService: ConfigService) {}
 
   get(id: number, projectId: number): string {
-    return jwt.sign(
+    return sign(
       {
-        id,
+        id: -id,
         ws: this.configService.get<string>('CHATBOTS_EDGE_URL'),
         project: {
           id: projectId,
