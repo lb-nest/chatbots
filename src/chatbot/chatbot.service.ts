@@ -35,7 +35,7 @@ export class ChatbotService {
 
     if (chatbot.enabled) {
       const schema = this.compiler.compile(chatbot.flow);
-      await axios.post(container.concat('/start'), schema, {
+      await axios.post(container.concat('/on'), schema, {
         headers: {
           token: this.tokenProvider.get(chatbot.id, projectId),
         },
@@ -101,14 +101,14 @@ export class ChatbotService {
       const token = this.tokenProvider.get(chatbot.id, projectId);
       if (chatbot.enabled) {
         const schema = this.compiler.compile(chatbot.flow);
-        await axios.post(container.concat('/start'), schema, {
+        await axios.post(container.concat('/on'), schema, {
           headers: {
             token,
           },
         });
       } else {
         await axios.post(
-          chatbot.container.concat('/stop'),
+          chatbot.container.concat('/off'),
           {},
           {
             headers: {
