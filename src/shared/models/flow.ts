@@ -82,7 +82,7 @@ class SourceOrTarget extends Position {
   height: number;
 }
 
-class HandleBound extends Position {
+class HandleBounds {
   @Type(() => SourceOrTarget)
   @ValidateNested({ each: true })
   @IsArray()
@@ -116,10 +116,10 @@ class NodeBase<T extends NodeType> {
   @IsInt()
   z: number;
 
-  @Type(() => HandleBound)
-  @ValidateNested({ each: true })
-  @IsArray()
-  handleBounds: HandleBound[];
+  @Type(() => HandleBounds)
+  @ValidateNested()
+  @IsObject()
+  handleBounds: HandleBounds;
 
   @IsNumber()
   width: number;
