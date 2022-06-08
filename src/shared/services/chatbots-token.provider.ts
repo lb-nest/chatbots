@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import jwt, { sign } from 'jsonwebtoken';
+import { sign } from 'jsonwebtoken';
 
 @Injectable()
 export class ChatbotsTokenProvider {
