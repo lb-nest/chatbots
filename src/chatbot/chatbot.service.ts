@@ -50,6 +50,9 @@ export class ChatbotService {
       where: {
         projectId,
       },
+      orderBy: {
+        updatedAt: 'desc',
+      },
     });
 
     return chatbots;
@@ -89,7 +92,10 @@ export class ChatbotService {
             id,
           },
         },
-        data: updateChatbotDto as any,
+        data: {
+          ...(updateChatbotDto as any),
+          container,
+        },
       })
       .catch(() => undefined);
 
