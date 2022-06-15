@@ -104,24 +104,26 @@ export class ChatbotService {
     }
 
     if (typeof chatbot.enabled !== 'undefined') {
-      const token = this.tokenProvider.get(chatbot.id, projectId);
       if (chatbot.enabled) {
-        const schema = this.compiler.compile(chatbot.flow);
-        await axios.post(container.concat('/start'), schema, {
-          headers: {
-            token,
-          },
-        });
-      } else {
-        await axios.post(
-          chatbot.container.concat('/stop'),
-          {},
-          {
+        const token = this.tokenProvider.get(chatbot.id, projectId);
+        if (chatbot.enabled) {
+          const schema = this.compiler.compile(chatbot.flow);
+          await axios.post(container.concat('/start'), schema, {
             headers: {
               token,
             },
-          },
-        );
+          });
+        } else {
+          await axios.post(
+            chatbot.container.concat('/stop'),
+            {},
+            {
+              headers: {
+                token,
+              },
+            },
+          );
+        }
       }
     }
 
