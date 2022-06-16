@@ -47,13 +47,6 @@ class Edge {
 
   @IsString()
   targetHandle: string;
-
-  @IsString()
-  sourcePosition: string;
-
-  @IsString()
-  targetPosition: string;
-
   @Type(() => MarkerEnd)
   @ValidateNested()
   @IsObject()
@@ -68,34 +61,6 @@ class Position {
   y: number;
 }
 
-class SourceOrTarget extends Position {
-  @IsString()
-  id: string;
-
-  @IsString()
-  position: string;
-
-  @IsNumber()
-  width: number;
-
-  @IsNumber()
-  height: number;
-}
-
-class HandleBounds {
-  @Type(() => SourceOrTarget)
-  @ValidateNested({ each: true })
-  @IsArray()
-  @ValidateIf((object, value) => value !== null)
-  source: SourceOrTarget[];
-
-  @Type(() => SourceOrTarget)
-  @ValidateNested({ each: true })
-  @IsArray()
-  @ValidateIf((object, value) => value !== null)
-  target: SourceOrTarget[];
-}
-
 class NodeBase<T extends NodeType> {
   @IsString()
   id: string;
@@ -107,25 +72,6 @@ class NodeBase<T extends NodeType> {
   @ValidateNested()
   @IsObject()
   position: Position;
-
-  @Type(() => Position)
-  @ValidateNested()
-  @IsObject()
-  positionAbsolute: Position;
-
-  @IsInt()
-  z: number;
-
-  @Type(() => HandleBounds)
-  @ValidateNested()
-  @IsObject()
-  handleBounds: HandleBounds;
-
-  @IsNumber()
-  width: number;
-
-  @IsNumber()
-  height: number;
 }
 
 class Data {
@@ -213,9 +159,9 @@ class BranchData extends Data {
   @IsArray()
   branches: BranchItem[];
 
-  @IsOptional()
+  @ValidateIf((_, value) => value !== null)
   @IsString()
-  default?: string;
+  default: string | null;
 }
 
 class Branch extends NodeBase<NodeType.Branch> {
@@ -257,7 +203,7 @@ class Transfer extends NodeBase<NodeType.Transfer> {
 
 class AssignTagData extends Data {
   @IsInt()
-  tag?: number;
+  tag: number;
 }
 
 class AssignTag extends NodeBase<NodeType.AssignTag> {
