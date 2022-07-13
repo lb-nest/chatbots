@@ -9,6 +9,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { Auth } from 'src/auth/auth.decorator';
 import { TokenPayload } from 'src/auth/entities/token-payload.entity';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -22,26 +23,26 @@ import { Chatbot } from './entities/chatbot.entity';
 export class ChatbotController {
   constructor(private readonly chatbotService: ChatbotService) {}
 
+  @MessagePattern('chatbots.create')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(new TransformInterceptor(Chatbot))
-  @Post()
   create(
     @Auth() user: TokenPayload,
-    @Body() createChatbotDto: CreateChatbotDto,
+    @Payload() createChatbotDto: CreateChatbotDto,
   ) {
     return this.chatbotService.create(user.project.id, createChatbotDto);
   }
 
+  @MessagePattern('chatbots.all')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(new TransformInterceptor(Chatbot))
-  @Get()
   findAll(@Auth() user: TokenPayload) {
     return this.chatbotService.findAll(user.project.id);
   }
 
+  @MessagePattern('chatbots.*')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(new TransformInterceptor(Chatbot))
-  @Get(':id')
   findOne(@Auth() user: TokenPayload, @Param('id') id: string) {
     return this.chatbotService.findOne(user.project.id, Number(id));
   }
