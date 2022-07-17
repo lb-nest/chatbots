@@ -9,9 +9,8 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { Auth } from 'src/auth/auth.decorator';
-import { TokenPayload } from 'src/auth/entities/token-payload.entity';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { BearerAuthGuard } from 'src/auth/bearer-auth.guard';
+import { User } from 'src/auth/user.decorator';
 import { TransformInterceptor } from 'src/shared/interceptors/transform.interceptor';
 import { ChatbotService } from './chatbot.service';
 import { CreateChatbotDto } from './dto/create-chatbot.dto';
@@ -22,35 +21,32 @@ import { Chatbot } from './entities/chatbot.entity';
 export class ChatbotController {
   constructor(private readonly chatbotService: ChatbotService) {}
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(BearerAuthGuard)
   @UseInterceptors(new TransformInterceptor(Chatbot))
   @Post()
-  create(
-    @Auth() user: TokenPayload,
-    @Body() createChatbotDto: CreateChatbotDto,
-  ) {
+  create(@User() user: any, @Body() createChatbotDto: CreateChatbotDto) {
     return this.chatbotService.create(user.project.id, createChatbotDto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(BearerAuthGuard)
   @UseInterceptors(new TransformInterceptor(Chatbot))
   @Get()
-  findAll(@Auth() user: TokenPayload) {
+  findAll(@User() user: any) {
     return this.chatbotService.findAll(user.project.id);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(BearerAuthGuard)
   @UseInterceptors(new TransformInterceptor(Chatbot))
   @Get(':id')
-  findOne(@Auth() user: TokenPayload, @Param('id') id: string) {
+  findOne(@User() user: any, @Param('id') id: string) {
     return this.chatbotService.findOne(user.project.id, Number(id));
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(BearerAuthGuard)
   @UseInterceptors(new TransformInterceptor(Chatbot))
   @Patch(':id')
   update(
-    @Auth() user: TokenPayload,
+    @User() user: any,
     @Param('id') id: string,
     @Body() updateChatbotDto: UpdateChatbotDto,
   ) {
@@ -61,10 +57,10 @@ export class ChatbotController {
     );
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(BearerAuthGuard)
   @UseInterceptors(new TransformInterceptor(Chatbot))
   @Delete(':id')
-  delete(@Auth() user: TokenPayload, @Param('id') id: string) {
+  delete(@User() user: any, @Param('id') id: string) {
     return this.chatbotService.delete(user.project.id, Number(id));
   }
 }
