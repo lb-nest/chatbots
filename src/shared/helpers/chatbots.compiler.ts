@@ -3,7 +3,10 @@ import { plainToClass } from 'class-transformer';
 import { validateSync } from 'class-validator';
 import { Flow, NodeType, Schema } from '../models';
 
-const eq = <T extends any>(key: keyof T, val: T[typeof key]) => {
+const eq = <T extends Record<string, any>>(
+  key: keyof T,
+  val: T[typeof key],
+) => {
   return (obj: T) => obj[key] === val;
 };
 
