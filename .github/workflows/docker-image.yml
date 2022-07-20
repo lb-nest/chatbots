@@ -23,6 +23,6 @@ jobs:
         file: ./Dockerfile
         builder: ${{steps.buildx.outputs.name}}
         push: true
-        tags: ${{secrets.DOCKER_HUB_USERNAME}}/contacts:latest
-        cache-from: type=registry,ref=${{secrets.DOCKER_HUB_USERNAME}}/contacts:buildcache
-        cache-to: type=registry,ref=${{secrets.DOCKER_HUB_USERNAME}}/contacts:buildcache,mode=max
+        tags: ${{secrets.DOCKER_HUB_USERNAME}}/chatbots:latest
+        cache-from: type=registry,ref=${{secrets.DOCKER_HUB_USERNAME}}/chatbots:buildcache
+        cache-to: type=registry,ref=${{secrets.DOCKER_HUB_USERNAME}}/chatbots:buildcache,mode=max
