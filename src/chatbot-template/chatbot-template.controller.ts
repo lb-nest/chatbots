@@ -1,16 +1,14 @@
 import {
   Body,
   Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
+  ParseIntPipe,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { TransformInterceptor } from 'src/shared/interceptors/transform.interceptor';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+import { PrismaPromise } from '@prisma/client';
+import { BearerAuthGuard } from 'src/auth/bearer-auth.guard';
+import { PlainToClassInterceptor } from 'src/shared/interceptors/plain-to-class.interceptor';
 import { ChatbotTemplateService } from './chatbot-template.service';
 import { CreateChatbotTemplateDto } from './dto/create-chatbot-template.dto';
 import { UpdateChatbotTemplateDto } from './dto/update-chatbot-template.dto';
@@ -22,44 +20,46 @@ export class ChatbotTemplateController {
     private readonly chatbotTemplateService: ChatbotTemplateService,
   ) {}
 
-  @UseGuards(JwtAuthGuard)
-  @UseInterceptors(new TransformInterceptor(ChatbotTemplate))
-  @Post()
-  create(@Body() createChatbotTemplateDto: CreateChatbotTemplateDto) {
+  @MessagePattern('chatbot-templates.create')
+  @UseGuards(BearerAuthGuard)
+  @UseInterceptors(new PlainToClassInterceptor(ChatbotTemplate))
+  create(
+    @Body() createChatbotTemplateDto: CreateChatbotTemplateDto,
+  ): PrismaPromise<ChatbotTemplate> {
     return this.chatbotTemplateService.create(createChatbotTemplateDto);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @UseInterceptors(new TransformInterceptor(ChatbotTemplate))
-  @Get()
-  findAll() {
+  @MessagePattern('chatbot-templates.findAll')
+  @UseGuards(BearerAuthGuard)
+  @UseInterceptors(new PlainToClassInterceptor(ChatbotTemplate))
+  findAll(): PrismaPromise<ChatbotTemplate[]> {
     return this.chatbotTemplateService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard)
-  @UseInterceptors(new TransformInterceptor(ChatbotTemplate))
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.chatbotTemplateService.findOne(Number(id));
+  @MessagePattern('chatbot-templates.findOne')
+  @UseGuards(BearerAuthGuard)
+  @UseInterceptors(new PlainToClassInterceptor(ChatbotTemplate))
+  findOne(
+    @Payload('payload', ParseIntPipe) id: number,
+  ): PrismaPromise<ChatbotTemplate> {
+    return this.chatbotTemplateService.findOne(id);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @UseInterceptors(new TransformInterceptor(ChatbotTemplate))
-  @Patch(':id')
+  @MessagePattern('chatbot-templates.update')
+  @UseGuards(BearerAuthGuard)
+  @UseInterceptors(new PlainToClassInterceptor(ChatbotTemplate))
   update(
-    @Param('id') id: string,
-    @Body() updateChatbotTemplateDto: UpdateChatbotTemplateDto,
-  ) {
-    return this.chatbotTemplateService.update(
-      Number(id),
-      updateChatbotTemplateDto,
-    );
+    @Payload('payload') updateChatbotTemplateDto: UpdateChatbotTemplateDto,
+  ): PrismaPromise<ChatbotTemplate> {
+    return this.chatbotTemplateService.update(updateChatbotTemplateDto);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @UseInterceptors(new TransformInterceptor(ChatbotTemplate))
-  @Delete(':id')
-  delete(@Param('id') id: string) {
-    return this.chatbotTemplateService.delete(Number(id));
+  @MessagePattern('chatbot-templates.remove')
+  @UseGuards(BearerAuthGuard)
+  @UseInterceptors(new PlainToClassInterceptor(ChatbotTemplate))
+  remove(
+    @Payload('payload', ParseIntPipe) id: number,
+  ): PrismaPromise<ChatbotTemplate> {
+    return this.chatbotTemplateService.remove(id);
   }
 }

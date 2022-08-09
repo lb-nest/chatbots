@@ -1,5 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import axios from 'axios';
+import { Injectable } from '@nestjs/common';
+import { PrismaPromise } from '@prisma/client';
+// import axios from 'axios';
 import { PrismaService } from 'src/prisma.service';
 import { ChatbotsCompiler } from 'src/shared/helpers/chatbots.compiler';
 import { ChatbotsContainerProvider } from 'src/shared/services/chatbots-container.provider';
@@ -25,7 +26,7 @@ export class ChatbotService {
       ? this.containerProvider.get()
       : undefined;
 
-    const chatbot: any = await this.prismaService.chatbot.create({
+    const chatbot = await this.prismaService.chatbot.create({
       data: {
         projectId,
         ...(createChatbotDto as any),
@@ -34,32 +35,89 @@ export class ChatbotService {
     });
 
     if (chatbot.enabled) {
-      const schema = this.compiler.compile(chatbot.flow);
-      await axios.post(container.concat('/start'), schema, {
-        headers: {
-          token: this.tokenProvider.get(chatbot.id, projectId),
-        },
-      });
+      const schema = this.compiler.compile(chatbot.flow as any);
+      // await axios.post(container.concat('/start'), schema, {
+      //   headers: {
+      //     token: this.tokenProvider.get(chatbot.id, projectId),
+      //   },
+      // });
     }
 
-    return chatbot as any;
+    return chatbot;
   }
 
-  async findAll(projectId: number): Promise<Chatbot[]> {
-    const chatbots: any[] = await this.prismaService.chatbot.findMany({
+  findAll(projectId: number): PrismaPromise<Chatbot[]> {
+    return this.prismaService.chatbot.findMany({
       where: {
         projectId,
       },
       orderBy: {
-        updatedAt: 'desc',
+        id: 'desc',
+      },
+    });
+  }
+
+  findOne(projectId: number, id: number): PrismaPromise<Chatbot> {
+    return this.prismaService.chatbot.findUniqueOrThrow({
+      where: {
+        projectId_id: {
+          projectId,
+          id,
+        },
+      },
+    });
+  }
+
+  async update(
+    projectId: number,
+    updateChatbotDto: UpdateChatbotDto,
+  ): Promise<Chatbot> {
+    const container = updateChatbotDto.enabled
+      ? this.containerProvider.get()
+      : undefined;
+
+    const chatbot = await this.prismaService.chatbot.update({
+      where: {
+        projectId_id: {
+          projectId,
+          id: updateChatbotDto.id,
+        },
+      },
+      data: {
+        ...(updateChatbotDto as any),
+        container,
       },
     });
 
-    return chatbots;
+    if (typeof chatbot.enabled !== 'undefined') {
+      if (chatbot.enabled) {
+        const token = this.tokenProvider.get(chatbot.id, projectId);
+        if (chatbot.enabled) {
+          const schema = this.compiler.compile(chatbot.flow as any);
+          // await axios.post(container.concat('/start'), schema, {
+          //   headers: {
+          //     token,
+          //   },
+          // });
+        } else {
+          // await axios.post(
+          //   chatbot.container.concat('/stop'),
+          //   {},
+          //   {
+          //     headers: {
+          //       token,
+          //     },
+          //   },
+          // );
+        }
+      }
+    }
+
+    return chatbot;
   }
 
-  async findOne(projectId: number, id: number): Promise<Chatbot> {
-    const chatbot: any = await this.prismaService.chatbot.findUnique({
+  async remove(projectId: number, id: number): Promise<Chatbot> {
+    const chatbot = await this.prismaService.chatbot.delete({
       where: {
         projectId_id: {
           projectId,
@@ -68,95 +126,17 @@ export class ChatbotService {
       },
     });
 
-    if (!chatbot) {
-      throw new NotFoundException();
-    }
-
-    return chatbot;
-  }
-
-  async update(
-    projectId: number,
-    id: number,
-    updateChatbotDto: UpdateChatbotDto,
-  ): Promise<Chatbot> {
-    const container = updateChatbotDto.enabled
-      ? this.containerProvider.get()
-      : undefined;
-
-    const chatbot: any = await this.prismaService.chatbot
-      .update({
-        where: {
-          projectId_id: {
-            projectId,
-            id,
-          },
-        },
-        data: {
-          ...(updateChatbotDto as any),
-          container,
-        },
-      })
-      .catch(() => undefined);
-
-    if (!chatbot) {
-      throw new NotFoundException();
-    }
-
-    if (typeof chatbot.enabled !== 'undefined') {
-      if (chatbot.enabled) {
-        const token = this.tokenProvider.get(chatbot.id, projectId);
-        if (chatbot.enabled) {
-          const schema = this.compiler.compile(chatbot.flow);
-          await axios.post(container.concat('/start'), schema, {
-            headers: {
-              token,
-            },
-          });
-        } else {
-          await axios.post(
-            chatbot.container.concat('/stop'),
-            {},
-            {
-              headers: {
-                token,
-              },
-            },
-          );
-        }
-      }
-    }
-
-    return chatbot;
-  }
-
-  async delete(projectId: number, id: number): Promise<Chatbot> {
-    const chatbot: any = await this.prismaService.chatbot
-      .delete({
-        where: {
-          projectId_id: {
-            projectId,
-            id,
-          },
-        },
-      })
-      .catch(() => undefined);
-
-    if (!chatbot) {
-      throw new NotFoundException();
-    }
-
     if (chatbot.enabled) {
       const token = this.tokenProvider.get(chatbot.id, projectId);
-      await axios.post(
-        chatbot.container.concat('/stop'),
-        {},
-        {
-          headers: {
-            token,
-          },
-        },
-      );
+      // await axios.post(
+      //   chatbot.container.concat('/stop'),
+      //   {},
+      //   {
+      //     headers: {
+      //       token,
+      //     },
+      //   },
+      // );
     }
 
     return chatbot;

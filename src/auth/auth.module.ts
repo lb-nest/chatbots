@@ -1,24 +1,14 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
-import { PrismaService } from 'src/prisma.service';
-import { JwtStrategy } from './jwt.strategy';
+import { AUTH_SERVICE } from 'src/shared/rabbitmq/constants';
+import { RabbitMQModule } from 'src/shared/rabbitmq/rabbitmq.module';
+import { BearerStrategy } from './bearer.strategy';
 
 @Module({
   imports: [
-    ConfigModule,
-    PassportModule,
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: (config: ConfigService) => ({
-        secret: config.get<string>('SECRET'),
-      }),
-      inject: [ConfigService],
+    RabbitMQModule.register({
+      name: AUTH_SERVICE,
     }),
   ],
-  providers: [JwtStrategy, PrismaService],
-  controllers: [],
-  exports: [],
+  providers: [BearerStrategy],
 })
 export class AuthModule {}

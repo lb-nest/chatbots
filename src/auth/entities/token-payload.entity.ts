@@ -1,16 +1,11 @@
-import { BillingType } from '../enums/billing-type.enum';
-import { RoleType } from '../enums/role-type.enum';
+import { Billing } from './billing.entity';
+import { Role } from './role.entity';
 
 export class TokenPayload {
   id: number;
-  project: {
+  project?: {
     id: number;
-    billing: {
-      id: number;
-      type: BillingType;
-    };
-    roles: Array<{
-      role: RoleType;
-    }>;
+    billing: Billing;
+    roles: Role[];
   };
 }

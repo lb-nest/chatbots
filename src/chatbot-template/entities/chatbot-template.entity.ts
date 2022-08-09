@@ -1,6 +1,6 @@
-import { Category } from '@prisma/client';
+import Prisma from '@prisma/client';
 
-export class ChatbotTemplate {
+export class ChatbotTemplate implements Prisma.ChatbotTemplate {
   id: number;
 
   name: string;
@@ -9,9 +9,9 @@ export class ChatbotTemplate {
 
   imageUrl: string;
 
-  category: Category;
+  category: Prisma.Category;
 
-  schema: any;
+  flow: any;
 
   createdAt: Date;
 
