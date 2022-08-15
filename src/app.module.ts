@@ -14,7 +14,6 @@ import { ChatbotModule } from './chatbot/chatbot.module';
         BROKER_URL: Joi.string().uri().required(),
         DATABASE_URL: Joi.string().uri().required(),
         SECRET: Joi.string().required(),
-        CHATBOTS_EDGE_URL: Joi.string().uri().required(),
         CHATBOTS_CONTAINER_URLS: Joi.string().required(),
       }),
     }),

@@ -6,11 +6,11 @@ import { sign } from 'jsonwebtoken';
 export class ChatbotsTokenProvider {
   constructor(private readonly configService: ConfigService) {}
 
-  get(id: number, projectId: number): string {
+  get(id: number, projectId: number, ws?: number): string {
     return sign(
       {
         id: -id,
-        ws: this.configService.get<string>('CHATBOTS_EDGE_URL'),
+        ws,
         project: {
           id: projectId,
         },

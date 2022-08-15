@@ -1,13 +1,24 @@
 import { Module } from '@nestjs/common';
-import { AUTH_SERVICE } from 'src/shared/rabbitmq/constants';
-import { RabbitMQModule } from 'src/shared/rabbitmq/rabbitmq.module';
+import { ConfigService } from '@nestjs/config';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { AUTH_SERVICE } from 'src/shared/constants/rabbitmq';
 import { BearerStrategy } from './bearer.strategy';
 
 @Module({
   imports: [
-    RabbitMQModule.register({
-      name: AUTH_SERVICE,
-    }),
+    ClientsModule.registerAsync([
+      {
+        name: AUTH_SERVICE,
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.RMQ,
+          options: {
+            urls: [configService.get<string>('BROKER_URL')],
+            queue: `${AUTH_SERVICE}_QUEUE`,
+          },
+        }),
+        inject: [ConfigService],
+      },
+    ]),
   ],
   providers: [BearerStrategy],
 })

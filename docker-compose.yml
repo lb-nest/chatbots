@@ -12,7 +12,6 @@ services:
       - DATABASE_URL=postgres://postgres:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}?schema=public
       - BROKER_URL
       - SECRET
-      - CHATBOTS_EDGE_URL
       - CHATBOTS_CONTAINER_URLS
     depends_on:
       - db

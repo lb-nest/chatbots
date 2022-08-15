@@ -8,6 +8,7 @@ import {
 } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
 import { PrismaService } from './prisma.service';
+import { CHATBOTS_SERVICE } from './shared/constants/rabbitmq';
 import { GlobalExceptionFilter } from './shared/filters/global-exception.filter';
 
 async function bootstrap() {
@@ -28,7 +29,7 @@ async function bootstrap() {
       transport: Transport.RMQ,
       options: {
         urls: [configService.get<string>('BROKER_URL')],
-        queue: 'CHATBOTS_SERVICE_QUEUE',
+        queue: `${CHATBOTS_SERVICE}_QUEUE`,
       },
     },
     {
