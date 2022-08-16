@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { AUTH_SERVICE } from 'src/shared/constants/rabbitmq';
+import { AUTH_SERVICE } from 'src/shared/constants/broker';
 import { BearerStrategy } from './bearer.strategy';
 
 @Module({
