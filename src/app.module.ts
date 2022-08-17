@@ -5,6 +5,7 @@ import Joi from 'joi';
 import { AuthModule } from './auth/auth.module';
 import { ChatbotTemplateModule } from './chatbot-template/chatbot-template.module';
 import { ChatbotModule } from './chatbot/chatbot.module';
+import { PrismaService } from './prisma.service';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ChatbotModule } from './chatbot/chatbot.module';
     ChatbotModule,
   ],
   providers: [
+    PrismaService,
     {
       provide: APP_INTERCEPTOR,
       useClass: ClassSerializerInterceptor,
