@@ -1,7 +1,7 @@
+import Prisma from '@prisma/client';
 import { Exclude } from 'class-transformer';
-import { Flow } from 'src/shared/models';
 
-export class Chatbot {
+export class Chatbot implements Prisma.Chatbot {
   id: number;
 
   @Exclude()
@@ -11,14 +11,14 @@ export class Chatbot {
 
   version: string;
 
-  flow: Flow;
+  flow: any;
 
   enabled: boolean;
 
   @Exclude()
-  container: string;
+  container: string | null;
 
-  error?: string;
+  error: string | null;
 
   createdAt: Date;
 

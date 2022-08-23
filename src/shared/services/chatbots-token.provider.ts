@@ -10,15 +10,12 @@ export class ChatbotsTokenProvider {
     return sign(
       {
         id: -id,
-        ws: this.configService.get<string>('CHATBOTS_EDGE_URL'),
+        ws: 'ws://127.0.0.1:10100',
         project: {
           id: projectId,
         },
       },
       this.configService.get<string>('SECRET'),
-      {
-        expiresIn: 120,
-      },
     );
   }
 }

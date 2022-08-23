@@ -1,16 +1,12 @@
 import {
-  Body,
   Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
+  ParseIntPipe,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { BearerAuthGuard } from 'src/auth/bearer-auth.guard';
-import { TransformInterceptor } from 'src/shared/interceptors/transform.interceptor';
+import { PlainToClassInterceptor } from 'src/shared/interceptors/plain-to-class.interceptor';
 import { ChatbotTemplateService } from './chatbot-template.service';
 import { CreateChatbotTemplateDto } from './dto/create-chatbot-template.dto';
 import { UpdateChatbotTemplateDto } from './dto/update-chatbot-template.dto';
@@ -21,45 +17,46 @@ export class ChatbotTemplateController {
   constructor(
     private readonly chatbotTemplateService: ChatbotTemplateService,
   ) {}
-
+  @MessagePattern('chatbot-templates.create')
   @UseGuards(BearerAuthGuard)
-  @UseInterceptors(new TransformInterceptor(ChatbotTemplate))
-  @Post()
-  create(@Body() createChatbotTemplateDto: CreateChatbotTemplateDto) {
+  @UseInterceptors(new PlainToClassInterceptor(ChatbotTemplate))
+  create(
+    @Payload('payload') createChatbotTemplateDto: CreateChatbotTemplateDto,
+  ): Promise<ChatbotTemplate> {
     return this.chatbotTemplateService.create(createChatbotTemplateDto);
   }
 
+  @MessagePattern('chatbot-templates.findAll')
   @UseGuards(BearerAuthGuard)
-  @UseInterceptors(new TransformInterceptor(ChatbotTemplate))
-  @Get()
+  @UseInterceptors(new PlainToClassInterceptor(ChatbotTemplate))
   findAll() {
     return this.chatbotTemplateService.findAll();
   }
 
+  @MessagePattern('chatbot-templates.findOne')
   @UseGuards(BearerAuthGuard)
-  @UseInterceptors(new TransformInterceptor(ChatbotTemplate))
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.chatbotTemplateService.findOne(Number(id));
+  @UseInterceptors(new PlainToClassInterceptor(ChatbotTemplate))
+  findOne(
+    @Payload('payload', ParseIntPipe) id: number,
+  ): Promise<ChatbotTemplate> {
+    return this.chatbotTemplateService.findOne(id);
   }
 
+  @MessagePattern('chatbot-templates.update')
   @UseGuards(BearerAuthGuard)
-  @UseInterceptors(new TransformInterceptor(ChatbotTemplate))
-  @Patch(':id')
+  @UseInterceptors(new PlainToClassInterceptor(ChatbotTemplate))
   update(
-    @Param('id') id: string,
-    @Body() updateChatbotTemplateDto: UpdateChatbotTemplateDto,
-  ) {
-    return this.chatbotTemplateService.update(
-      Number(id),
-      updateChatbotTemplateDto,
-    );
+    @Payload('payload') updateChatbotTemplateDto: UpdateChatbotTemplateDto,
+  ): Promise<ChatbotTemplate> {
+    return this.chatbotTemplateService.update(updateChatbotTemplateDto);
   }
 
+  @MessagePattern('chatbot-templates.remove')
   @UseGuards(BearerAuthGuard)
-  @UseInterceptors(new TransformInterceptor(ChatbotTemplate))
-  @Delete(':id')
-  delete(@Param('id') id: string) {
-    return this.chatbotTemplateService.delete(Number(id));
+  @UseInterceptors(new PlainToClassInterceptor(ChatbotTemplate))
+  remove(
+    @Payload('payload', ParseIntPipe) id: number,
+  ): Promise<ChatbotTemplate> {
+    return this.chatbotTemplateService.remove(id);
   }
 }

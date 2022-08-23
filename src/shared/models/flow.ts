@@ -39,14 +39,17 @@ class Edge {
   @IsString()
   source: string;
 
+  @IsOptional()
   @IsString()
   sourceHandle: string;
 
   @IsString()
   target: string;
 
+  @IsOptional()
   @IsString()
   targetHandle: string;
+
   @Type(() => MarkerEnd)
   @ValidateNested()
   @IsObject()

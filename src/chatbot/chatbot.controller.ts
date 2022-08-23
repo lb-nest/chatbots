@@ -1,17 +1,14 @@
 import {
-  Body,
   Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
+  ParseIntPipe,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+import { Auth } from 'src/auth/auth.decorator';
 import { BearerAuthGuard } from 'src/auth/bearer-auth.guard';
-import { User } from 'src/auth/user.decorator';
-import { TransformInterceptor } from 'src/shared/interceptors/transform.interceptor';
+import { TokenPayload } from 'src/auth/entities/token-payload.entity';
+import { PlainToClassInterceptor } from 'src/shared/interceptors/plain-to-class.interceptor';
 import { ChatbotService } from './chatbot.service';
 import { CreateChatbotDto } from './dto/create-chatbot.dto';
 import { UpdateChatbotDto } from './dto/update-chatbot.dto';
@@ -21,46 +18,52 @@ import { Chatbot } from './entities/chatbot.entity';
 export class ChatbotController {
   constructor(private readonly chatbotService: ChatbotService) {}
 
+  @MessagePattern('chatbots.create')
   @UseGuards(BearerAuthGuard)
-  @UseInterceptors(new TransformInterceptor(Chatbot))
-  @Post()
-  create(@User() user: any, @Body() createChatbotDto: CreateChatbotDto) {
-    return this.chatbotService.create(user.project.id, createChatbotDto);
-  }
-
-  @UseGuards(BearerAuthGuard)
-  @UseInterceptors(new TransformInterceptor(Chatbot))
-  @Get()
-  findAll(@User() user: any) {
-    return this.chatbotService.findAll(user.project.id);
-  }
-
-  @UseGuards(BearerAuthGuard)
-  @UseInterceptors(new TransformInterceptor(Chatbot))
-  @Get(':id')
-  findOne(@User() user: any, @Param('id') id: string) {
-    return this.chatbotService.findOne(user.project.id, Number(id));
-  }
-
-  @UseGuards(BearerAuthGuard)
-  @UseInterceptors(new TransformInterceptor(Chatbot))
-  @Patch(':id')
-  update(
-    @User() user: any,
-    @Param('id') id: string,
-    @Body() updateChatbotDto: UpdateChatbotDto,
+  @UseInterceptors(new PlainToClassInterceptor(Chatbot))
+  create(
+    @Auth() auth: TokenPayload,
+    @Payload('payload') createChatbotDto: CreateChatbotDto,
   ) {
-    return this.chatbotService.update(
-      user.project.id,
-      Number(id),
-      updateChatbotDto,
-    );
+    console.log(createChatbotDto);
+
+    return this.chatbotService.create(auth.project.id, createChatbotDto);
   }
 
+  @MessagePattern('chatbots.findAll')
   @UseGuards(BearerAuthGuard)
-  @UseInterceptors(new TransformInterceptor(Chatbot))
-  @Delete(':id')
-  delete(@User() user: any, @Param('id') id: string) {
-    return this.chatbotService.delete(user.project.id, Number(id));
+  @UseInterceptors(new PlainToClassInterceptor(Chatbot))
+  findAll(@Auth() auth: TokenPayload) {
+    return this.chatbotService.findAll(auth.project.id);
+  }
+
+  @MessagePattern('chatbots.findOne')
+  @UseGuards(BearerAuthGuard)
+  @UseInterceptors(new PlainToClassInterceptor(Chatbot))
+  findOne(
+    @Auth() auth: TokenPayload,
+    @Payload('payload', ParseIntPipe) id: number,
+  ) {
+    return this.chatbotService.findOne(auth.project.id, id);
+  }
+
+  @MessagePattern('chatbots.update')
+  @UseGuards(BearerAuthGuard)
+  @UseInterceptors(new PlainToClassInterceptor(Chatbot))
+  update(
+    @Auth() auth: TokenPayload,
+    @Payload('payload') updateChatbotDto: UpdateChatbotDto,
+  ) {
+    return this.chatbotService.update(auth.project.id, updateChatbotDto);
+  }
+
+  @MessagePattern('chatbots.remove')
+  @UseGuards(BearerAuthGuard)
+  @UseInterceptors(new PlainToClassInterceptor(Chatbot))
+  remove(
+    @Auth() auth: TokenPayload,
+    @Payload('payload', ParseIntPipe) id: number,
+  ) {
+    return this.chatbotService.remove(auth.project.id, id);
   }
 }

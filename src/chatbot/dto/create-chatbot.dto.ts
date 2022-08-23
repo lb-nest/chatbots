@@ -14,12 +14,13 @@ export class CreateChatbotDto {
   name: string;
 
   @IsOptional()
+  @IsString()
   @IsSemVer()
   version?: string;
 
   @Type(() => Flow)
-  @ValidateNested()
   @IsObject()
+  @ValidateNested()
   flow: Flow;
 
   @IsOptional()

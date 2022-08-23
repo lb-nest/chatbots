@@ -43,13 +43,12 @@ export class ChatbotTemplateService {
   }
 
   async update(
-    id: number,
     updateChatbotTemplateDto: UpdateChatbotTemplateDto,
   ): Promise<ChatbotTemplate> {
     throw new NotImplementedException();
   }
 
-  async delete(id: number): Promise<ChatbotTemplate> {
+  async remove(id: number): Promise<ChatbotTemplate> {
     throw new NotImplementedException();
   }
 }

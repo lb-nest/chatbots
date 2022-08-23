@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable()
-export class TransformInterceptor<T> implements NestInterceptor {
+export class PlainToClassInterceptor<T> implements NestInterceptor {
   constructor(private readonly classRef: ClassConstructor<T>) {}
 
   intercept(context: ExecutionContext, next: CallHandler<any>): Observable<T> {
