@@ -9,7 +9,7 @@ export class ChatbotsTokenProvider {
   get(id: number, projectId: number): string {
     return sign(
       {
-        id: -id,
+        id,
         ws: 'ws://127.0.0.1:10100',
         project: {
           id: projectId,

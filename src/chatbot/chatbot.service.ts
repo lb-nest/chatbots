@@ -88,27 +88,25 @@ export class ChatbotService {
       },
     });
 
-    if (typeof chatbot.enabled !== 'undefined') {
+    if (typeof chatbot.enabled === 'boolean') {
+      const token = this.tokenProvider.get(chatbot.id, projectId);
       if (chatbot.enabled) {
-        const token = this.tokenProvider.get(chatbot.id, projectId);
-        if (chatbot.enabled) {
-          const schema = this.compiler.compile(chatbot.flow as any);
-          await axios.post(container.concat('/start'), schema, {
+        const schema = this.compiler.compile(chatbot.flow as any);
+        await axios.post(container.concat('/start'), schema, {
+          headers: {
+            token,
+          },
+        });
+      } else {
+        await axios.post(
+          chatbot.container.concat('/stop'),
+          {},
+          {
             headers: {
               token,
             },
-          });
-        } else {
-          await axios.post(
-            chatbot.container.concat('/stop'),
-            {},
-            {
-              headers: {
-                token,
-              },
-            },
-          );
-        }
+          },
+        );
       }
     }
 
