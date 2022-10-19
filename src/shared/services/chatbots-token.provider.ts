@@ -9,8 +9,9 @@ export class ChatbotsTokenProvider {
   get(id: number, projectId: number): string {
     return sign(
       {
+        type: 'Chatbot',
         id,
-        ws: 'ws://127.0.0.1:10100',
+        ws: this.configService.get<string>('CHATBOTS_EDGE_URL'),
         project: {
           id: projectId,
         },
