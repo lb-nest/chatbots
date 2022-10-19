@@ -23,6 +23,8 @@ model Chatbot {
   updatedAt DateTime @updatedAt
 
   @@unique([projectId, id])
+
+  @@index([projectId])
 }
 
 enum Category {
@@ -38,4 +40,6 @@ model ChatbotTemplate {
   flow        Json
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([category])
 }
