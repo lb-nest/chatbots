@@ -25,8 +25,6 @@ export class ChatbotController {
     @Auth() auth: TokenPayload,
     @Payload('payload') createChatbotDto: CreateChatbotDto,
   ) {
-    console.log(createChatbotDto);
-
     return this.chatbotService.create(auth.project.id, createChatbotDto);
   }
 

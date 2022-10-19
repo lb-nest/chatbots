@@ -65,7 +65,7 @@ export enum ValidationType {
   Boolean = 'Boolean',
   Email = 'Email',
   Phone = 'Phone',
-  Regex = 'Regex',
+  RegExp = 'RegExp',
 }
 
 export class CollectInput extends NodeBase<NodeType.CollectInput> {
@@ -77,6 +77,10 @@ export class CollectInput extends NodeBase<NodeType.CollectInput> {
 
   @IsEnum(ValidationType)
   validation: ValidationType;
+
+  @IsOptional()
+  @IsString()
+  regexp?: string;
 
   @IsOptional()
   @IsString()
