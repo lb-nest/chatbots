@@ -12,6 +12,7 @@ import { ChatbotModule } from './chatbot/chatbot.module';
       isGlobal: true,
       validationSchema: Joi.object({
         DATABASE_URL: Joi.string().uri().required(),
+        BROKER_URL: Joi.string().uri().required(),
         SECRET: Joi.string().required(),
         CHATBOTS_EDGE_URL: Joi.string().uri().required(),
         CHATBOTS_CONTAINER_URLS: Joi.string().required(),

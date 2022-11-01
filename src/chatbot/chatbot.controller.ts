@@ -14,7 +14,7 @@ import { CreateChatbotDto } from './dto/create-chatbot.dto';
 import { UpdateChatbotDto } from './dto/update-chatbot.dto';
 import { Chatbot } from './entities/chatbot.entity';
 
-@Controller('chatbots')
+@Controller()
 export class ChatbotController {
   constructor(private readonly chatbotService: ChatbotService) {}
 

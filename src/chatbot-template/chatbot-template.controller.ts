@@ -12,7 +12,7 @@ import { CreateChatbotTemplateDto } from './dto/create-chatbot-template.dto';
 import { UpdateChatbotTemplateDto } from './dto/update-chatbot-template.dto';
 import { ChatbotTemplate } from './entities/chatbot-template.entity';
 
-@Controller('chatbot-templates')
+@Controller()
 export class ChatbotTemplateController {
   constructor(
     private readonly chatbotTemplateService: ChatbotTemplateService,
