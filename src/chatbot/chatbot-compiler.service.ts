@@ -1,7 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { validateSync } from 'class-validator';
-import { Flow, NodeType, Schema } from '../models';
+import { Flow } from './entities/flow.entity';
+import { NodeType } from './entities/node.entity';
+import { Schema } from './entities/schema.entity';
 
 const eq = <T extends Record<string, any>>(
   key: keyof T,
@@ -11,7 +13,7 @@ const eq = <T extends Record<string, any>>(
 };
 
 @Injectable()
-export class ChatbotsCompiler {
+export class ChatbotCompilerService {
   compile(flow: Flow): Schema {
     const schema: Schema = {
       nodes: [],

@@ -1,4 +1,4 @@
-import { IsEnum, IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 
 export enum VariableType {
   Any = 'Any',
@@ -15,5 +15,6 @@ export class Variable {
   name: string;
 
   // TODO: conditional validation
+  @IsOptional()
   value?: any;
 }

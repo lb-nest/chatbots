@@ -12,8 +12,8 @@ import {
   ServiceCall,
   Start,
   Transfer,
-} from './node';
-import { Variable } from './variable';
+} from './node.entity';
+import { Variable } from './variable.entity';
 
 export class Schema {
   @Type(() => NodeBase, {

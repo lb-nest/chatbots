@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class ChatbotsContainerProvider {
+export class ChatbotContainerProvider {
   private readonly separator = ',';
 
   private urls: string[];

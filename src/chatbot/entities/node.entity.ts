@@ -10,7 +10,7 @@ import {
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
-import { Attachment, Button } from './message';
+import { Attachment, Button } from './message.entity';
 
 export enum NodeType {
   Start = 'Start',
@@ -147,23 +147,19 @@ export class Branch extends NodeBase<NodeType.Branch> {
   default?: string;
 }
 
-export class Request {
+export class ServiceCall extends NodeBase<NodeType.ServiceCall> {
   @IsUrl()
   url: string;
 
   @IsObject()
   headers: Record<string, string>;
 
+  @IsOptional()
   body?: any;
-}
 
-export class ServiceCall extends NodeBase<NodeType.ServiceCall> {
-  @ValidateNested()
-  @IsObject()
-  request: Request;
-
-  @IsObject()
-  response: Record<number, any>;
+  @IsOptional()
+  @IsString()
+  variable?: string;
 
   @IsOptional()
   @IsString()

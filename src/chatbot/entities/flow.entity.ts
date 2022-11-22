@@ -7,18 +7,18 @@ import {
   IsObject,
   IsOptional,
   IsString,
+  IsUrl,
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
-import { Attachment, Button } from './message';
+import { Attachment, Button } from './message.entity';
 import {
   BranchItem,
   NodeType,
-  Request,
   TriggerType,
   ValidationType,
-} from './node';
-import { Variable } from './variable';
+} from './node.entity';
+import { Variable } from './variable.entity';
 
 class MarkerEnd {
   @IsString()
@@ -175,13 +175,18 @@ class Branch extends NodeBase<NodeType.Branch> {
 }
 
 class ServiceCallData extends Data {
-  @Type(() => Request)
-  @ValidateNested()
-  @IsObject()
-  request: Request;
+  @IsUrl()
+  url: string;
 
   @IsObject()
-  response: Record<string, string>;
+  headers: Record<string, string>;
+
+  @IsOptional()
+  body?: any;
+
+  @IsOptional()
+  @IsString()
+  variable?: string;
 }
 
 class ServiceCall extends NodeBase<NodeType.ServiceCall> {

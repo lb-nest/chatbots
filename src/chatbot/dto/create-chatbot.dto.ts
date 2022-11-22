@@ -7,7 +7,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { Flow } from 'src/shared/models';
+import { Flow } from '../entities/flow.entity';
 
 export class CreateChatbotDto {
   @IsString()

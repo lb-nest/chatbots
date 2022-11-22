@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
+import { ChatbotCompilerService } from 'src/chatbot/chatbot-compiler.service';
 import { PrismaService } from 'src/prisma.service';
-import { ChatbotsCompiler } from 'src/shared/helpers/chatbots.compiler';
-import { ChatbotsContainerProvider } from 'src/shared/services/chatbots-container.provider';
-import { ChatbotsTokenProvider } from 'src/shared/services/chatbots-token.provider';
+import { ChatbotContainerProvider } from './chatbot-container.provider';
+import { ChatbotTokenProvider } from './chatbot-token.provider';
 import { CreateChatbotDto } from './dto/create-chatbot.dto';
 import { UpdateChatbotDto } from './dto/update-chatbot.dto';
 import { Chatbot } from './entities/chatbot.entity';
@@ -11,10 +11,10 @@ import { Chatbot } from './entities/chatbot.entity';
 @Injectable()
 export class ChatbotService {
   constructor(
+    private readonly compiler: ChatbotCompilerService,
+    private readonly containerProvider: ChatbotContainerProvider,
+    private readonly tokenProvider: ChatbotTokenProvider,
     private readonly prismaService: PrismaService,
-    private readonly compiler: ChatbotsCompiler,
-    private readonly containerProvider: ChatbotsContainerProvider,
-    private readonly tokenProvider: ChatbotsTokenProvider,
   ) {}
 
   async create(

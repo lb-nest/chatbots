@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { sign } from 'jsonwebtoken';
 
 @Injectable()
-export class ChatbotsTokenProvider {
+export class ChatbotTokenProvider {
   constructor(private readonly configService: ConfigService) {}
 
   get(id: number, projectId: number): string {
