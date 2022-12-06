@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import merge from 'lodash.merge';
+import merge from 'deepmerge';
 import { ChatbotCompilerService } from 'src/chatbot/chatbot-compiler.service';
 import { PrismaService } from 'src/prisma.service';
 import { ChatbotContainerProvider } from './chatbot-container.provider';
@@ -26,7 +26,7 @@ export class ChatbotService {
       : undefined;
 
     const chatbot = await this.prismaService.chatbot.create({
-      data: merge({}, createChatbotDto as any, {
+      data: merge<any>(createChatbotDto, {
         projectId,
         containerId: container.handshake.auth.containerId,
       }),
