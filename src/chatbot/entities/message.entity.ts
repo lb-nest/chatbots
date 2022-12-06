@@ -1,10 +1,10 @@
 import {
   IsEnum,
-  IsUrl,
   IsOptional,
-  IsString,
-  ValidateIf,
   IsPhoneNumber,
+  IsString,
+  IsUrl,
+  ValidateIf,
 } from 'class-validator';
 
 export enum AttachmentType {

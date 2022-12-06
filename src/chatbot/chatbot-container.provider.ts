@@ -1,20 +1,21 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Socket } from 'socket.io';
 
 @Injectable()
-export class ChatbotContainerProvider {
-  private readonly separator = ',';
+export class ChatbotContainerProvider extends Map<string, Socket> {
+  private i = 0;
 
-  private urls: string[];
+  get(key?: string): Socket {
+    if (key) {
+      return super.get(key);
+    }
 
-  constructor(configService: ConfigService) {
-    this.urls = configService
-      .get<string>('CHATBOTS_CONTAINER_URLS')
-      .split(this.separator);
-  }
+    const keys = Array.from(super.keys());
 
-  get(): string {
-    const index = Math.round(Math.random() * (this.urls.length - 1));
-    return this.urls[index];
+    if (this.i >= keys.length) {
+      this.i = 0;
+    }
+
+    return super.get(keys[this.i++]);
   }
 }

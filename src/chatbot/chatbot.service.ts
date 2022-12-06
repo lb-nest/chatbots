@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import axios from 'axios';
+import merge from 'lodash.merge';
 import { ChatbotCompilerService } from 'src/chatbot/chatbot-compiler.service';
 import { PrismaService } from 'src/prisma.service';
 import { ChatbotContainerProvider } from './chatbot-container.provider';
@@ -11,7 +11,7 @@ import { Chatbot } from './entities/chatbot.entity';
 @Injectable()
 export class ChatbotService {
   constructor(
-    private readonly compiler: ChatbotCompilerService,
+    private readonly compilerService: ChatbotCompilerService,
     private readonly containerProvider: ChatbotContainerProvider,
     private readonly tokenProvider: ChatbotTokenProvider,
     private readonly prismaService: PrismaService,
@@ -26,20 +26,20 @@ export class ChatbotService {
       : undefined;
 
     const chatbot = await this.prismaService.chatbot.create({
-      data: {
+      data: merge({}, createChatbotDto as any, {
         projectId,
-        ...(createChatbotDto as any),
-        container,
-      },
+        containerId: container.handshake.auth.containerId,
+      }),
     });
 
     if (chatbot.enabled) {
-      const schema = this.compiler.compile(chatbot.flow as any);
-      await axios.post(container.concat('/start'), schema, {
-        headers: {
+      container.emit(
+        'start',
+        await this.compilerService.compile(chatbot.flow as any),
+        {
           token: this.tokenProvider.get(chatbot.id, projectId),
         },
-      });
+      );
     }
 
     return chatbot;
@@ -71,10 +71,6 @@ export class ChatbotService {
     projectId: number,
     updateChatbotDto: UpdateChatbotDto,
   ): Promise<Chatbot> {
-    const container = updateChatbotDto.enabled
-      ? this.containerProvider.get()
-      : undefined;
-
     const chatbot = await this.prismaService.chatbot.update({
       where: {
         projectId_id: {
@@ -82,31 +78,49 @@ export class ChatbotService {
           id: updateChatbotDto.id,
         },
       },
-      data: {
-        ...(updateChatbotDto as any),
-        container,
-      },
+      data: updateChatbotDto as any,
     });
 
-    if (typeof chatbot.enabled === 'boolean') {
+    if (typeof updateChatbotDto.enabled === 'boolean') {
+      const container = this.containerProvider.get(chatbot.containerId);
       const token = this.tokenProvider.get(chatbot.id, projectId);
+
       if (chatbot.enabled) {
-        const schema = this.compiler.compile(chatbot.flow as any);
-        await axios.post(container.concat('/start'), schema, {
-          headers: {
+        container.emit(
+          'start',
+          await this.compilerService.compile(chatbot.flow as any),
+          {
             token,
+          },
+        );
+
+        return this.prismaService.chatbot.update({
+          where: {
+            projectId_id: {
+              projectId,
+              id: updateChatbotDto.id,
+            },
+          },
+          data: {
+            containerId: container.handshake.auth.containerId,
           },
         });
       } else {
-        await axios.post(
-          chatbot.container.concat('/stop'),
-          {},
-          {
-            headers: {
-              token,
+        container?.emit('stop', null, {
+          token,
+        });
+
+        return this.prismaService.chatbot.update({
+          where: {
+            projectId_id: {
+              projectId,
+              id: updateChatbotDto.id,
             },
           },
-        );
+          data: {
+            containerId: null,
+          },
+        });
       }
     }
 
@@ -124,16 +138,10 @@ export class ChatbotService {
     });
 
     if (chatbot.enabled) {
-      const token = this.tokenProvider.get(chatbot.id, projectId);
-      await axios.post(
-        chatbot.container.concat('/stop'),
-        {},
-        {
-          headers: {
-            token,
-          },
-        },
-      );
+      const container = this.containerProvider.get(chatbot.containerId);
+      container?.emit('stop', null, {
+        token: this.tokenProvider.get(chatbot.id, projectId),
+      });
     }
 
     return chatbot;

@@ -78,7 +78,9 @@ export class CollectInput extends NodeBase<NodeType.CollectInput> {
   @IsEnum(ValidationType)
   validation: ValidationType;
 
-  @IsOptional()
+  @ValidateIf(
+    (object: CollectInput) => object.validation === ValidationType.RegExp,
+  )
   @IsString()
   regexp?: string;
 
@@ -104,6 +106,9 @@ export enum OperatorType {
   Lte = 'Lte',
   Gt = 'Gt',
   Gte = 'Gte',
+  Includes = 'Includes',
+  StartsWith = 'StartsWith',
+  EndsWith = 'EndsWith',
 }
 
 export class Condition {
@@ -155,7 +160,7 @@ export class ServiceCall extends NodeBase<NodeType.ServiceCall> {
   headers: Record<string, string>;
 
   @IsOptional()
-  body?: any;
+  data?: any;
 
   @IsOptional()
   @IsString()

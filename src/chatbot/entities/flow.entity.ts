@@ -125,6 +125,12 @@ class CollectInputData extends Data {
 
   @IsEnum(ValidationType)
   validation: ValidationType;
+
+  @ValidateIf(
+    (object: CollectInputData) => object.validation === ValidationType.RegExp,
+  )
+  @IsString()
+  regexp?: string;
 }
 
 class CollectInput extends NodeBase<NodeType.CollectInput> {
@@ -182,7 +188,7 @@ class ServiceCallData extends Data {
   headers: Record<string, string>;
 
   @IsOptional()
-  body?: any;
+  data?: any;
 
   @IsOptional()
   @IsString()
@@ -211,7 +217,7 @@ class Transfer extends NodeBase<NodeType.Transfer> {
 
 class AssignTagData extends Data {
   @IsInt()
-  tag: number;
+  tagId: number;
 }
 
 class AssignTag extends NodeBase<NodeType.AssignTag> {

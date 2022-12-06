@@ -11,16 +11,15 @@ datasource db {
 }
 
 model Chatbot {
-  id        Int      @id @default(autoincrement())
-  projectId Int
-  name      String
-  version   String   @default("1.0.0")
-  flow      Json
-  enabled   Boolean  @default(false)
-  container String?
-  error     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  projectId   Int
+  name        String
+  version     String   @default("1.0.0")
+  flow        Json
+  enabled     Boolean  @default(false)
+  containerId String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@unique([projectId, id])
 

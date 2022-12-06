@@ -16,9 +16,7 @@ export class Chatbot implements Prisma.Chatbot {
   enabled: boolean;
 
   @Exclude()
-  container: string | null;
-
-  error: string | null;
+  containerId: string | null;
 
   createdAt: Date;
 

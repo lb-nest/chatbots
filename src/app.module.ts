@@ -13,9 +13,9 @@ import { ChatbotModule } from './chatbot/chatbot.module';
       validationSchema: Joi.object({
         DATABASE_URL: Joi.string().uri().required(),
         BROKER_URL: Joi.string().uri().required(),
+        PORT: Joi.number().port().required(),
         SECRET: Joi.string().required(),
         CHATBOTS_EDGE_URL: Joi.string().uri().required(),
-        CHATBOTS_CONTAINER_URLS: Joi.string().required(),
       }),
     }),
     AuthModule,

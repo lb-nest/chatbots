@@ -24,6 +24,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   const configService = app.get(ConfigService);
+
   app.connectMicroservice<MicroserviceOptions>(
     {
       transport: Transport.RMQ,
@@ -38,5 +39,6 @@ async function bootstrap() {
   );
 
   await app.startAllMicroservices();
+  await app.listen(configService.get<number>('PORT'), '0.0.0.0');
 }
 bootstrap();
