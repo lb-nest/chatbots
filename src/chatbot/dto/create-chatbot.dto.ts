@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsBoolean,
   IsObject,
@@ -10,6 +10,7 @@ import {
 import { Flow } from '../entities/flow.entity';
 
 export class CreateChatbotDto {
+  @Transform(({ value }) => value?.trim())
   @IsString()
   name: string;
 

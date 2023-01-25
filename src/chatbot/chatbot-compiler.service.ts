@@ -24,7 +24,7 @@ export class ChatbotCompilerService {
         case NodeType.Start:
         case NodeType.SendMessage:
         case NodeType.CollectInput:
-        case NodeType.Transfer:
+        case NodeType.Assign:
         case NodeType.AssignTag:
         case NodeType.Close:
           Object.assign(node, data, {

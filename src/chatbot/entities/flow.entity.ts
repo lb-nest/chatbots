@@ -11,9 +11,10 @@ import {
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
-import { Attachment, Button } from './message.entity';
 import {
+  Attachment,
   BranchItem,
+  Button,
   NodeType,
   TriggerType,
   ValidationType,
@@ -51,8 +52,8 @@ class Edge {
   targetHandle: string;
 
   @Type(() => MarkerEnd)
-  @ValidateNested()
   @IsObject()
+  @ValidateNested()
   markerEnd: MarkerEnd;
 }
 
@@ -72,8 +73,8 @@ class NodeBase<T extends NodeType> {
   type: T;
 
   @Type(() => Position)
-  @ValidateNested()
   @IsObject()
+  @ValidateNested()
   position: Position;
 }
 
@@ -89,8 +90,8 @@ class StartData extends Data {
 
 class Start extends NodeBase<NodeType.Start> {
   @Type(() => StartData)
-  @ValidateNested()
   @IsObject()
+  @ValidateNested()
   data: StartData;
 }
 
@@ -99,15 +100,15 @@ class SendMessageData extends Data {
   text: string;
 
   @Type(() => Attachment)
-  @ValidateNested({ each: true })
   @IsArray()
+  @ValidateNested({ each: true })
   attachments: Attachment[];
 }
 
 class SendMessage extends NodeBase<NodeType.SendMessage> {
   @Type(() => SendMessageData)
-  @ValidateNested()
   @IsObject()
+  @ValidateNested()
   data: SendMessageData;
 }
 
@@ -116,8 +117,8 @@ class CollectInputData extends Data {
   text: string;
 
   @Type(() => Attachment)
-  @ValidateNested({ each: true })
   @IsArray()
+  @ValidateNested({ each: true })
   attachments: Attachment[];
 
   @IsString()
@@ -135,8 +136,8 @@ class CollectInputData extends Data {
 
 class CollectInput extends NodeBase<NodeType.CollectInput> {
   @Type(() => CollectInputData)
-  @ValidateNested()
   @IsObject()
+  @ValidateNested()
   data: CollectInputData;
 }
 
@@ -145,27 +146,27 @@ class ButtonsData extends Data {
   text: string;
 
   @Type(() => Attachment)
-  @ValidateNested({ each: true })
   @IsArray()
+  @ValidateNested({ each: true })
   attachments: Attachment[];
 
   @Type(() => Button)
-  @ValidateNested({ each: true })
   @IsArray()
+  @ValidateNested({ each: true })
   buttons: Button[];
 }
 
 class Buttons extends NodeBase<NodeType.Buttons> {
   @Type(() => ButtonsData)
-  @ValidateNested()
   @IsObject()
+  @ValidateNested()
   data: ButtonsData;
 }
 
 class BranchData extends Data {
   @Type(() => BranchItem)
-  @ValidateNested({ each: true })
   @IsArray()
+  @ValidateNested({ each: true })
   branches: BranchItem[];
 
   @ValidateIf((_, value) => value !== null)
@@ -175,8 +176,8 @@ class BranchData extends Data {
 
 class Branch extends NodeBase<NodeType.Branch> {
   @Type(() => BranchData)
-  @ValidateNested()
   @IsObject()
+  @ValidateNested()
   data: BranchData;
 }
 
@@ -197,8 +198,8 @@ class ServiceCallData extends Data {
 
 class ServiceCall extends NodeBase<NodeType.ServiceCall> {
   @Type(() => ServiceCallData)
-  @ValidateNested()
   @IsObject()
+  @ValidateNested()
   data: ServiceCallData;
 }
 
@@ -208,10 +209,10 @@ class TransferData extends Data {
   assignedTo?: number | null;
 }
 
-class Transfer extends NodeBase<NodeType.Transfer> {
+class Assign extends NodeBase<NodeType.Assign> {
   @Type(() => TransferData)
-  @ValidateNested()
   @IsObject()
+  @ValidateNested()
   data: TransferData;
 }
 
@@ -222,8 +223,8 @@ class AssignTagData extends Data {
 
 class AssignTag extends NodeBase<NodeType.AssignTag> {
   @Type(() => AssignTagData)
-  @ValidateNested()
   @IsObject()
+  @ValidateNested()
   data: AssignTagData;
 }
 
@@ -231,8 +232,8 @@ class CloseData extends Data {}
 
 class Close extends NodeBase<NodeType.Close> {
   @Type(() => CloseData)
-  @ValidateNested()
   @IsObject()
+  @ValidateNested()
   data: CloseData;
 }
 
@@ -243,14 +244,14 @@ type Node =
   | Buttons
   | Branch
   | ServiceCall
-  | Transfer
+  | Assign
   | AssignTag
   | Close;
 
 export class Flow {
   @Type(() => Edge)
-  @ValidateNested({ each: true })
   @IsArray()
+  @ValidateNested({ each: true })
   edges: Edge[];
 
   @Type(() => NodeBase, {
@@ -263,19 +264,19 @@ export class Flow {
         { name: NodeType.Buttons, value: Buttons },
         { name: NodeType.Branch, value: Branch },
         { name: NodeType.ServiceCall, value: ServiceCall },
-        { name: NodeType.Transfer, value: Transfer },
+        { name: NodeType.Assign, value: Assign },
         { name: NodeType.AssignTag, value: AssignTag },
         { name: NodeType.Close, value: Close },
       ],
     },
     keepDiscriminatorProperty: true,
   })
-  @ValidateNested({ each: true })
   @IsArray()
+  @ValidateNested({ each: true })
   nodes: Node[];
 
   @Type(() => Variable)
-  @ValidateNested({ each: true })
   @IsArray()
+  @ValidateNested({ each: true })
   variables: Variable[];
 }

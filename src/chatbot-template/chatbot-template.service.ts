@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  NotImplementedException,
-} from '@nestjs/common';
+import { Injectable, NotImplementedException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateChatbotTemplateDto } from './dto/create-chatbot-template.dto';
 import { UpdateChatbotTemplateDto } from './dto/update-chatbot-template.dto';
@@ -19,27 +15,17 @@ export class ChatbotTemplateService {
   }
 
   async findAll(): Promise<ChatbotTemplate[]> {
-    const chatbotTemplates = await this.prismaService.chatbotTemplate.findMany({
+    return this.prismaService.chatbotTemplate.findMany({
       where: {},
     });
-
-    return chatbotTemplates as any[];
   }
 
   async findOne(id: number): Promise<ChatbotTemplate> {
-    const chatbotTemplate = await this.prismaService.chatbotTemplate.findUnique(
-      {
-        where: {
-          id,
-        },
+    return this.prismaService.chatbotTemplate.findUniqueOrThrow({
+      where: {
+        id,
       },
-    );
-
-    if (!chatbotTemplate) {
-      throw new NotFoundException();
-    }
-
-    return chatbotTemplate as any;
+    });
   }
 
   async update(

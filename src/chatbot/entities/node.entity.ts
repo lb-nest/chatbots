@@ -5,12 +5,12 @@ import {
   IsInt,
   IsObject,
   IsOptional,
+  IsPhoneNumber,
   IsString,
   IsUrl,
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
-import { Attachment, Button } from './message.entity';
 
 export enum NodeType {
   Start = 'Start',
@@ -19,7 +19,7 @@ export enum NodeType {
   Buttons = 'Buttons',
   Branch = 'Branch',
   ServiceCall = 'ServiceCall',
-  Transfer = 'Transfer',
+  Assign = 'Assign',
   AssignTag = 'AssignTag',
   Close = 'Close',
 }
@@ -45,13 +45,33 @@ export class Start extends NodeBase<NodeType.Start> {
   @IsString()
   next?: string;
 }
+
+export enum AttachmentType {
+  Audio = 'Audio',
+  Document = 'Document',
+  Image = 'Image',
+  Video = 'Video',
+}
+
+export class Attachment {
+  @IsEnum(AttachmentType)
+  type: AttachmentType;
+
+  @IsUrl()
+  url: string;
+
+  @IsOptional()
+  @IsString()
+  name?: string;
+}
+
 export class SendMessage extends NodeBase<NodeType.SendMessage> {
   @IsString()
   text: string;
 
   @Type(() => Attachment)
-  @ValidateNested({ each: true })
   @IsArray()
+  @ValidateNested({ each: true })
   attachments: Attachment[];
 
   @IsOptional()
@@ -89,13 +109,41 @@ export class CollectInput extends NodeBase<NodeType.CollectInput> {
   next?: string;
 }
 
+export enum ButtonType {
+  QuickReply = 'QuickReply',
+  Url = 'Url',
+  Phone = 'Phone',
+}
+
+export class Button {
+  @IsEnum(ButtonType)
+  type: ButtonType;
+
+  @IsString()
+  text: string;
+
+  @ValidateIf(({ type }) => type === ButtonType.Url)
+  @IsString()
+  @IsUrl()
+  url?: string;
+
+  @ValidateIf(({ type }) => type === ButtonType.Phone)
+  @IsString()
+  @IsPhoneNumber()
+  phone?: string;
+
+  @IsOptional()
+  @IsString()
+  next?: string;
+}
+
 export class Buttons extends NodeBase<NodeType.Buttons> {
   @IsString()
   text: string;
 
   @Type(() => Button)
-  @ValidateNested({ each: true })
   @IsArray()
+  @ValidateNested({ each: true })
   buttons: Button[];
 }
 
@@ -132,8 +180,8 @@ export class BranchItem {
   type: ComparsionType;
 
   @Type(() => Condition)
-  @ValidateNested({ each: true })
   @IsArray()
+  @ValidateNested({ each: true })
   conditions: Condition[];
 
   @IsOptional()
@@ -143,8 +191,8 @@ export class BranchItem {
 
 export class Branch extends NodeBase<NodeType.Branch> {
   @Type(() => BranchItem)
-  @ValidateNested({ each: true })
   @IsArray()
+  @ValidateNested({ each: true })
   branches: BranchItem[];
 
   @IsOptional()
@@ -175,10 +223,24 @@ export class ServiceCall extends NodeBase<NodeType.ServiceCall> {
   error?: string;
 }
 
-export class Transfer extends NodeBase<NodeType.Transfer> {
+export enum AssigneeType {
+  User = 'User',
+  Chatbot = 'Chatbot',
+}
+
+export class AssignedTo {
   @IsInt()
-  @ValidateIf((object, value) => value !== null)
-  assignedTo: number | null;
+  id: number;
+
+  @IsEnum(AssigneeType)
+  type: AssigneeType;
+}
+
+export class Assign extends NodeBase<NodeType.Assign> {
+  @Type(() => AssignedTo)
+  @IsObject()
+  @ValidateNested()
+  assignedTo: AssignedTo | null;
 
   @IsOptional()
   @IsString()
@@ -187,7 +249,7 @@ export class Transfer extends NodeBase<NodeType.Transfer> {
 
 export class AssignTag extends NodeBase<NodeType.AssignTag> {
   @IsInt()
-  tag: number;
+  tagId: number;
 
   @IsOptional()
   @IsString()
@@ -207,6 +269,6 @@ export type Node =
   | Buttons
   | Branch
   | ServiceCall
-  | Transfer
+  | Assign
   | AssignTag
   | Close;

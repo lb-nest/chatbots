@@ -11,11 +11,11 @@ import { ChatbotService } from './chatbot.service';
   controllers: [ChatbotController],
   providers: [
     ChatbotCompilerService,
+    PrismaService,
     ChatbotContainerGateway,
     ChatbotContainerProvider,
     ChatbotTokenProvider,
     ChatbotService,
-    PrismaService,
   ],
 })
 export class ChatbotModule {}

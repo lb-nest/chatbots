@@ -2,7 +2,6 @@ import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import Joi from 'joi';
-import { AuthModule } from './auth/auth.module';
 import { ChatbotTemplateModule } from './chatbot-template/chatbot-template.module';
 import { ChatbotModule } from './chatbot/chatbot.module';
 
@@ -13,12 +12,11 @@ import { ChatbotModule } from './chatbot/chatbot.module';
       validationSchema: Joi.object({
         DATABASE_URL: Joi.string().uri().required(),
         BROKER_URL: Joi.string().uri().required(),
-        PORT: Joi.number().port().required(),
+        PORT: Joi.number().port().default(8080),
         SECRET: Joi.string().required(),
         CHATBOTS_EDGE_URL: Joi.string().uri().required(),
       }),
     }),
-    AuthModule,
     ChatbotModule,
     ChatbotTemplateModule,
   ],

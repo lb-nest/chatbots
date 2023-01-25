@@ -11,19 +11,65 @@ datasource db {
 }
 
 model Chatbot {
-  id          Int      @id @default(autoincrement())
+  id          Int              @id @default(autoincrement())
   projectId   Int
   name        String
-  version     String   @default("1.0.0")
+  version     String           @default("1.0.0")
   flow        Json
-  enabled     Boolean  @default(false)
+  enabled     Boolean          @default(false)
   containerId String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  sessions    ChatbotSession[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
 
   @@unique([projectId, id])
-
   @@index([projectId])
+}
+
+model ChatbotSession {
+  id        String        @id @default(uuid()) @db.Uuid
+  chatbotId Int
+  chatbot   Chatbot       @relation(fields: [chatbotId], references: [id], onDelete: Cascade)
+  contactId Int
+  sessions  NodeSession[]
+  createdAt DateTime      @default(now())
+
+  @@index([chatbotId])
+  @@index([contactId])
+}
+
+model NodeSession {
+  id        String         @id @default(uuid()) @db.Uuid
+  sessionId String
+  session   ChatbotSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  nodeId    String
+  nodeType  String
+  logs      NodeLog[]
+  createdAt DateTime       @default(now())
+
+  @@index([sessionId])
+  @@index([nodeId])
+  @@index([nodeType])
+}
+
+enum NodeLogType {
+  Start
+  Input
+  Finish
+  Error
+}
+
+model NodeLog {
+  id           String      @id @default(uuid()) @db.Uuid
+  sessionId    String
+  session      NodeSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  type         NodeLogType
+  errorMessage String?
+  context      Json?
+  createdAt    DateTime    @default(now())
+
+  @@index([sessionId])
+  @@index([type])
 }
 
 enum Category {

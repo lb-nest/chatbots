@@ -12,9 +12,9 @@ import { Chatbot } from './entities/chatbot.entity';
 export class ChatbotService {
   constructor(
     private readonly compilerService: ChatbotCompilerService,
+    private readonly prismaService: PrismaService,
     private readonly containerProvider: ChatbotContainerProvider,
     private readonly tokenProvider: ChatbotTokenProvider,
-    private readonly prismaService: PrismaService,
   ) {}
 
   async create(
@@ -28,7 +28,7 @@ export class ChatbotService {
     const chatbot = await this.prismaService.chatbot.create({
       data: merge<any>(createChatbotDto, {
         projectId,
-        containerId: container.handshake.auth.containerId,
+        containerId: container?.handshake.auth.containerId,
       }),
     });
 
@@ -102,7 +102,7 @@ export class ChatbotService {
             },
           },
           data: {
-            containerId: container.handshake.auth.containerId,
+            containerId: container?.handshake.auth.containerId,
           },
         });
       } else {
