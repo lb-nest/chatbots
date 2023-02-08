@@ -12,11 +12,11 @@ export class ChatbotContainerGateway
 {
   constructor(private readonly containerProvider: ChatbotContainerProvider) {}
 
-  handleConnection(socket: Socket) {
+  handleConnection(socket: Socket): void {
     this.containerProvider.set(socket.handshake.auth.containerId, socket);
   }
 
-  handleDisconnect(socket: Socket) {
+  handleDisconnect(socket: Socket): void {
     this.containerProvider.delete(socket.handshake.auth.containerId);
   }
 }
