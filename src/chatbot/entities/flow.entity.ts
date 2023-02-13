@@ -182,6 +182,10 @@ class Branch extends NodeBase<NodeType.Branch> {
 }
 
 class ServiceCallData extends Data {
+  @IsOptional()
+  @IsString()
+  method?: string;
+
   @IsUrl()
   url: string;
 

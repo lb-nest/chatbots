@@ -170,14 +170,14 @@ export class Condition {
   variable2: string;
 }
 
-export enum ComparsionType {
+export enum ComparisonType {
   All = 'All',
   Any = 'Any',
 }
 
 export class BranchItem {
-  @IsEnum(ComparsionType)
-  type: ComparsionType;
+  @IsEnum(ComparisonType)
+  type: ComparisonType;
 
   @Type(() => Condition)
   @IsArray()
@@ -201,6 +201,10 @@ export class Branch extends NodeBase<NodeType.Branch> {
 }
 
 export class ServiceCall extends NodeBase<NodeType.ServiceCall> {
+  @IsOptional()
+  @IsString()
+  method?: string;
+
   @IsUrl()
   url: string;
 
